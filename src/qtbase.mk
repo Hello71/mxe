@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := ed6e46db84f7d34923ab4eae165c63e05ab3cfa9d19a73d3f57b4e7bfd41d
 $(PKG)_SUBDIR   := $(PKG)-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/5.11/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc dbus fontconfig freetds freetype harfbuzz jpeg libmysqlclient libpng openssl pcre2 postgresql sqlite zlib
+$(PKG)_DEPS     := cc jpeg libpng openssl pcre2 sqlite zlib
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- https://download.qt.io/official_releases/qt/5.8/ | \
@@ -23,8 +23,6 @@ define $(PKG)_BUILD
     # ICU is buggy. See #653. TODO: reenable it some time in the future.
     cd '$(1)' && \
         OPENSSL_LIBS="`'$(TARGET)-pkg-config' --libs-only-l openssl`" \
-        PSQL_LIBS="-lpq -lsecur32 `'$(TARGET)-pkg-config' --libs-only-l openssl pthreads` -lws2_32" \
-        SYBASE_LIBS="-lsybdb `'$(TARGET)-pkg-config' --libs-only-l gnutls` -liconv -lws2_32" \
         PKG_CONFIG="${TARGET}-pkg-config" \
         PKG_CONFIG_SYSROOT_DIR="/" \
         PKG_CONFIG_LIBDIR="$(PREFIX)/$(TARGET)/lib/pkgconfig" \
@@ -46,22 +44,22 @@ define $(PKG)_BUILD
             -accessibility \
             -nomake examples \
             -nomake tests \
-            -plugin-sql-mysql \
-            -mysql_config $(PREFIX)/$(TARGET)/bin/mysql_config \
+            -no-sql-mysql \
             -plugin-sql-sqlite \
             -plugin-sql-odbc \
-            -plugin-sql-psql \
-            -plugin-sql-tds -D Q_USE_SYBASE \
+            -no-sql-psql \
+            -no-sql-tds \
             -system-zlib \
             -system-libpng \
+            -no-gif \
             -system-libjpeg \
             -system-sqlite \
-            -fontconfig \
-            -system-freetype \
-            -system-harfbuzz \
+            -no-fontconfig \
+            -no-freetype \
+            -no-harfbuzz \
             -system-pcre \
             -openssl-linked \
-            -dbus-linked \
+            -no-dbus \
             -no-pch \
             -v \
             $($(PKG)_CONFIGURE_OPTS)
