@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := ed6e46db84f7d34923ab4eae165c63e05ab3cfa9d19a73d3f57b4e7bfd41d
 $(PKG)_SUBDIR   := $(PKG)-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/5.11/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc jpeg libpng openssl pcre2 sqlite zlib
+$(PKG)_DEPS     := cc instantclient-sdk-nt instantclient-sdk-windows.x64 jpeg libpng openssl pcre2 sqlite zlib
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- https://download.qt.io/official_releases/qt/5.8/ | \
@@ -47,6 +47,7 @@ define $(PKG)_BUILD
             -no-sql-mysql \
             -plugin-sql-sqlite \
             -plugin-sql-odbc \
+            -plugin-sql-oci \
             -no-sql-psql \
             -no-sql-tds \
             -system-zlib \
