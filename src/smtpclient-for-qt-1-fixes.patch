@@ -1,0 +1,29 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Brand <mabrand@mabrand.nl>
+Date: Wed, 13 Jun 2018 16:51:16 +0200
+Subject: [PATCH 1/1] fix Qt version check
+
+QT_VERSION_MAJOR, not QT_MAJOR_VERSION, and fixed stray #elif
+
+Taken from https://github.com/bluetiger9/SmtpClient-for-Qt/pull/71
+
+diff --git a/src/mimemessage.cpp b/src/mimemessage.cpp
+index 1111111..2222222 100644
+--- a/src/mimemessage.cpp
++++ b/src/mimemessage.cpp
+@@ -294,9 +294,9 @@ QString MimeMessage::toString()
+         mime += "References: <" + mInReplyTo + ">\r\n";
+     }
+ 
+-#if QT_MAJOR_VERSION < 5 //Qt4 workaround since RFC2822Date isn't defined
++#if QT_VERSION_MAJOR < 5 //Qt4 workaround since RFC2822Date isn't defined
+     mime += QString("Date: %1\r\n").arg(QDateTime::currentDateTime().toString("dd MMM yyyy hh:mm:ss +/-TZ"));
+-#elif //Qt5 supported
++#else //Qt5 supported
+     mime += QString("Date: %1\r\n").arg(QDateTime::currentDateTime().toString(Qt::RFC2822Date));
+ #endif //support RFC2822Date
+ 
