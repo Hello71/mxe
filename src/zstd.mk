@@ -10,6 +10,9 @@ $(PKG)_GH_CONF  := facebook/zstd/tags,v
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
+    # force installing pkg-config files
+    sed -i -e '/IF (UNIX)/d' '$(SOURCE_DIR)/build/cmake/CMakeLists.txt'
+
     # build and install the library
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)/build/cmake' \
         -DZSTD_BUILD_STATIC=$(CMAKE_STATIC_BOOL) \
@@ -17,15 +20,6 @@ define $(PKG)_BUILD
         -DZSTD_BUILD_PROGRAMS=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
-
-    # create pkg-config files
-    $(INSTALL) -d '$(PREFIX)/$(TARGET)/lib/pkgconfig'
-    (echo 'Name: $(PKG)'; \
-     echo 'Version: $($(PKG)_VERSION)'; \
-     echo 'Description: $($(PKG)_DESCR)'; \
-     echo 'Libs: -L$(PREFIX)/$(TARGET)/lib -l$(PKG)'; \
-     echo 'Cflags: -I$(PREFIX)/$(TARGET)/include';) \
-     > '$(PREFIX)/$(TARGET)/lib/pkgconfig/lib$(PKG).pc'
 
     # compile test
     '$(TARGET)-gcc' \
