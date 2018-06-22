@@ -25,11 +25,11 @@ define $(PKG)_BUILD
      echo 'Description: $($(PKG)_DESCR)'; \
      echo 'Libs: -L$(PREFIX)/$(TARGET)/lib -l$(PKG)'; \
      echo 'Cflags: -I$(PREFIX)/$(TARGET)/include';) \
-     > '$(PREFIX)/$(TARGET)/lib/pkgconfig/$(PKG).pc'
+     > '$(PREFIX)/$(TARGET)/lib/pkgconfig/lib$(PKG).pc'
 
     # compile test
     '$(TARGET)-gcc' \
         -W -Wall -Werror -ansi -pedantic \
         '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe' \
-        `'$(TARGET)-pkg-config' $(PKG) --cflags --libs`
+        `'$(TARGET)-pkg-config' lib$(PKG) --cflags --libs`
 endef
